@@ -1,0 +1,172 @@
+import flash.filters.DisplacementMapFilter;
+
+var loader:URLLoader =  new URLLoader();
+var xml:XML;
+
+var xmlList:XMLList =  new XMLList();
+var imagePath_ar:Array = new Array();
+var iconPath_ar:Array = new Array();
+var listNum:int = 0;
+////////////////////////////////////
+var myNumA:int = 0;
+var index:uint = 0;
+//----------------
+var icon_load:Loader;
+var icon_req:URLRequest;
+var total_icon:Number;
+//----------------
+var image_load:Loader;
+var image_req:URLRequest;
+var total_image:Number;
+var imgSprite:Sprite=new Sprite();
+initPlayer();
+//-----------
+var currentICON:int=0;
+
+
+
+
+function initPlayer():void
+{
+	loader.load(new URLRequest("loading/image_list.xml"));
+	loader.addEventListener(Event.COMPLETE,onComplete);
+	function onComplete(e:Event):void
+	{
+		xml = new XML(e.target.data);
+		xmlList = xml.image;
+		total_icon = xml.image.length();
+		for (var i:int = 0; i<total_icon; i++)
+		{
+			
+			imagePath_ar[i] = xmlList[i].image_path;
+			iconPath_ar[i] = xmlList[i].icon_path;
+			icon_req=new URLRequest(iconPath_ar[i]);
+			icon_load=new Loader();
+			icon_load.load(icon_req);
+			icon_load.contentLoaderInfo.addEventListener(Event.COMPLETE,iconCOMPLETE);
+			icon_load.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,iconPROGRESS);
+			icon_load.addEventListener(IOErrorEvent.IO_ERROR,iconERRoR);
+			icon_mc["icon_"+i].addChild(icon_load);
+			
+		}
+		
+	}
+}
+
+
+function iconCOMPLETE(e){
+	index++;
+	if(index==total_icon){
+		iconButton();
+		imageLoad(0);
+	}
+	
+}
+function imageCOMPLETE(e){
+	//image_mc.image_anim_A.addChild(image_load);
+}
+
+function iconButton(){//定义按钮监听器
+	for(var i=0;i<total_icon;i++){
+		icon_mc["icon_"+i].addEventListener(MouseEvent.CLICK,onPress_Btn);
+		icon_mc["icon_"+i].buttonMode=true;
+	}	
+	btnToP2.addEventListener(MouseEvent.CLICK,onbtnToP2);
+	btnToP1.addEventListener(MouseEvent.CLICK,onbtnToP1);
+	btnToP3.addEventListener(MouseEvent.CLICK,onbtnToP3);
+	btnToP4.addEventListener(MouseEvent.CLICK,onbtnToP4);
+	
+	
+}
+function onbtnToP2(e:MouseEvent):void{
+	currentICON++;
+	if(currentICON==8){
+		icon_mc.gotoAndPlay("p1");
+	}else if(currentICON==16){
+		icon_mc.gotoAndPlay("p4");
+	}
+	imageLoad(currentICON);
+}
+function onbtnToP1(e:MouseEvent):void{
+	currentICON--;
+	if(currentICON==7){
+		
+		icon_mc.gotoAndPlay("p2");
+	}else if(currentICON==-1){
+		
+		icon_mc.gotoAndPlay("p3");
+	}
+	imageLoad(currentICON);
+}
+function onbtnToP3(e:MouseEvent):void{
+	if(currentICON>7){
+		imageLoad(0);
+		icon_mc.gotoAndPlay("p2");
+	}else if(currentICON<=8 ){
+		imageLoad(8);
+		icon_mc.gotoAndPlay("p3");
+	}
+
+}
+function onbtnToP4(e:MouseEvent):void{
+	if(currentICON>7){
+		imageLoad(0);
+		icon_mc.gotoAndPlay("p4");
+	}else if(currentICON<=8 ){
+		imageLoad(8);
+		icon_mc.gotoAndPlay("p1");
+	}
+}
+function onPress_Btn(e:MouseEvent):void{//定义按钮事件
+	var btnName=(e.currentTarget.name);
+	var btnNumName:String=btnName.substring(5,7);
+	var aa:int=int(btnNumName);
+	image_mc.gotoAndPlay(1);
+	imageLoad(aa);
+
+}
+function onPage (aa){
+	
+}
+
+function imageLoad(aa){
+	//trace("aa:"+aa);
+	//trace("currentICON:"+currentICON);
+	if(aa<0){
+		aa=total_icon-1;	
+	}else if(aa>(total_icon-1)){
+		aa=0;	
+
+	}
+	//当（a<10）为真 则返回b的值  假则返回值为16
+	image_mc.play();
+	image_load=new Loader();
+	image_load.load(new URLRequest(imagePath_ar[aa]));
+	image_load.contentLoaderInfo.addEventListener(Event.COMPLETE,imageCOMPLETE);
+	image_mc.image_anim_A.addChild(image_load);
+	currentICON=aa;
+}
+
+
+
+////////////////////////////////////////////
+
+function iconPROGRESS(event:ProgressEvent)
+{
+	//trace("图片加载中......");
+}
+
+function iconERRoR(event:IOErrorEvent)
+{
+	//trace("加载图片出错");
+}
+function imagePROGRESS(event:ProgressEvent)
+{
+	//trace("图片加载中......");
+}
+
+function imageERRoR(event:IOErrorEvent)
+{
+	//trace("加载图片出错");
+}
+
