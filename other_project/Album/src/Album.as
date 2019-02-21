@@ -23,17 +23,26 @@ package
 		public var imageContainer : MovieClip;
 		
 		public var previewContainer : MovieClip;
+		public var previewMask : MovieClip;
+		
 		//======================================
-		private const MAX_PREVIEW : int = 16;
+		private const PREVIEW_WIDTH : int = 80;
+		private const PREVIEW_HEIGHT : int = 80;
+		private const PREVIEW_SHOW_COUNT : int = 7;
+		private const PREVIEW_WIDTH_WITH_GAP : int = 100;
+		private const GAP : int = 20;
 		
 		private var _imageLoader : Loader;
+		private var _previewContainerStartX : int
 		private var _data : XMLList;
 		
 		private var _minIndex : int;
 		private var _currentIndex : int;
 		private var _maxIndex : int;
 		
+		private var _minGroup : int;
 		private var _currentGroup : int;
+		private var _maxGroup : int
 		
 		//===================================================start test
 		private function myLoad() : void
@@ -56,17 +65,23 @@ package
 		
 		private function InitPreview() : void
 		{
-			var i : int;
-			for(i = 0; i < _data.length() && i < MAX_PREVIEW; i++)
+			previewContainer.removeChildren(1);
+			for(var i : int = 0; i < _data.length(); i++)
 			{
-				RefreshPreviewImage(i);
+				var container : Sprite = new Sprite();
+				
+				container.buttonMode = true;
+				var loader : MLoader = new MLoader();
+				loader.index = i;
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadPreviewComplete);
+				loader.load(new URLRequest(_data[i]));
+				loader.x = i * PREVIEW_WIDTH_WITH_GAP;
+				loader.y = 0;
+				loader.addEventListener(MouseEvent.CLICK, clickPreview);
+				container.addChild(loader);
+				previewContainer.addChild(container);
 			}
 			
-			
-		 	for(i = _data.length(); i < MAX_PREVIEW; i++)
-		 	{
-				(previewContainer["icon_" + i] as DisplayObjectContainer).visible = false;
-		 	}
 		}
 		
 		
@@ -75,6 +90,8 @@ package
 		{
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
+			
+			previewContainer.mask = previewMask;
 			prevItemBtn.addEventListener(MouseEvent.CLICK, clickPrevItem);
 			nextItemBtn.addEventListener(MouseEvent.CLICK, clickNextItem);
 			prevGroupBtn.addEventListener(MouseEvent.CLICK, clickPrevGroup);
@@ -91,14 +108,18 @@ package
 			_minIndex = 0;
 			_maxIndex = _data.length() - 1;
 			_currentIndex = 0;
+			_currentGroup = 0;
+			_minGroup = 0;
+			_maxGroup = Math.ceil(_data.length() / PREVIEW_SHOW_COUNT) - 1;
+			_previewContainerStartX = previewContainer.x;
 			InitPreview();
 			RefreshImage();
 		}
 		
 		private function clickPreview(evt : MouseEvent) : void
 		{
-			var previewIcon : MovieClip = evt.currentTarget as MovieClip;
-			_currentIndex = previewIcon.index;
+			var mLoader : MLoader = evt.currentTarget as MLoader;
+			_currentIndex = mLoader.index;
 			RefreshImage();
 		}
 		
@@ -121,10 +142,27 @@ package
 		
 		private function clickPrevGroup(evt : MouseEvent) : void
 		{
+			prevGroupBtn.visible = true;
+			nextGroupBtn.visible = true;
+			if(--_currentGroup <= _minGroup)
+			{
+				_currentGroup = _minGroup;
+				prevGroupBtn.visible = false;
+			}
+			previewContainer.x = _previewContainerStartX - _currentGroup * PREVIEW_WIDTH_WITH_GAP * PREVIEW_SHOW_COUNT;
 		}
 		
 		private function clickNextGroup(evt : MouseEvent) : void
 		{
+			prevGroupBtn.visible = true;
+			nextGroupBtn.visible = true;
+			
+			if(++_currentGroup >= _maxGroup)
+			{
+				_currentGroup = _maxGroup;
+				nextGroupBtn.visible = false;
+			}
+			previewContainer.x = _previewContainerStartX - _currentGroup * PREVIEW_WIDTH_WITH_GAP * PREVIEW_SHOW_COUNT;
 		}
 		
 		private function RefreshImage() : void
@@ -142,41 +180,16 @@ package
 				
 		}
 		
-		private function RefreshPreviewImage(index : int) : void
-		{
-			var previewIcon : MovieClip = previewContainer["icon_" + index];
-			previewIcon.index = index;
-			if(!previewIcon.hasEventListener(MouseEvent.CLICK))
-			{
-				previewIcon.addEventListener(MouseEvent.CLICK, clickPreview);
-			}
-			previewIcon.visible = true;
-			var loader : Loader;
-			if(previewIcon.numChildren > 1)
-			{
-				loader = previewIcon.getChildAt(1) as Loader;
-			}
-			else
-			{
-				loader = new Loader();
-			
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadPreviewComplete);
-				previewIcon.addChild(loader);
-			}
-			loader.load(new URLRequest(_data[index]));
-				
-		}
-		
-		
 		private function loadImageComplete(evt : Event): void
 		{
 			
 		}
+		
 		private function loadPreviewComplete(evt : Event): void
 		{
-			var loader : Loader = evt.target.loader as Loader;
-			loader.height = loader.width = 80;
-			
+			var loader : MLoader = evt.target.loader as MLoader;
+			loader.width = PREVIEW_WIDTH;
+			loader.height = PREVIEW_HEIGHT;
 		}
 		
 		
