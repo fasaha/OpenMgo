@@ -7,6 +7,7 @@ package openmgo
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.system.System;
+	import flash.utils.Timer;
 	import flash.utils.setTimeout;
 
 	public class EnableChecker
@@ -36,7 +37,7 @@ package openmgo
 		{
 			_urlLoader.addEventListener(Event.COMPLETE, onLoadSucc);
 			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR,onLoadErr);
-			_urlLoader.load(new URLRequest("http://baaoo.com/openmgo/checker.html"));
+			_urlLoader.load(new URLRequest("http://baaoo.com/openmgo/checker.html?t=" + Math.random()));
 		}
 		
 		private function onLoadSucc(evt : Event): void
