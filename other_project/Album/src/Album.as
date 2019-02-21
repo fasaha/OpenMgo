@@ -1,9 +1,8 @@
 package
 {
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
 	import flash.display.Loader;
 	import flash.display.MovieClip;
+	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -18,8 +17,6 @@ package
 	{
 		public var prevItemBtn : SimpleButton;
 		public var nextItemBtn : SimpleButton;
-		public var prevGroupBtn : SimpleButton;
-		public var nextGroupBtn : SimpleButton;
 		public var imageContainer : MovieClip;
 		
 		public var previewContainer : MovieClip;
@@ -44,6 +41,8 @@ package
 		private var _currentGroup : int;
 		private var _maxGroup : int
 		
+		private var _prePreview : Sprite;
+		
 		//===================================================start test
 		private function myLoad() : void
 		{
@@ -65,25 +64,33 @@ package
 		
 		private function InitPreview() : void
 		{
-			previewContainer.removeChildren(1);
+			previewContainer.removeChildren(0);
 			for(var i : int = 0; i < _data.length(); i++)
 			{
 				var container : Sprite = new Sprite();
-				
 				container.buttonMode = true;
 				var loader : MLoader = new MLoader();
 				loader.index = i;
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadPreviewComplete);
 				loader.load(new URLRequest(_data[i]));
-				loader.x = i * PREVIEW_WIDTH_WITH_GAP;
-				loader.y = 0;
+				container.x = i * PREVIEW_WIDTH_WITH_GAP;
+				container.y = 0;
 				loader.addEventListener(MouseEvent.CLICK, clickPreview);
 				container.addChild(loader);
+				
+				var shape:Shape = new Shape();
+				shape.graphics.beginFill(0xffffff);
+				shape.graphics.drawCircle(0,0,4);
+				shape.graphics.endFill();
+				shape.x = PREVIEW_WIDTH * 0.5;
+				shape.y = -5;
+				shape.visible = false;
+				container.addChild(shape);
+				
 				previewContainer.addChild(container);
 			}
 			
 		}
-		
 		
 		
 		public function Album()
@@ -94,11 +101,9 @@ package
 			previewContainer.mask = previewMask;
 			prevItemBtn.addEventListener(MouseEvent.CLICK, clickPrevItem);
 			nextItemBtn.addEventListener(MouseEvent.CLICK, clickNextItem);
-			prevGroupBtn.addEventListener(MouseEvent.CLICK, clickPrevGroup);
-			nextGroupBtn.addEventListener(MouseEvent.CLICK, clickNextGroup);
 			_imageLoader = new Loader();
 			_imageLoader.addEventListener(Event.COMPLETE, loadImageComplete);
-			imageContainer.addChild(_imageLoader);
+			imageContainer.addChildAt(_imageLoader, 2);
 			myLoad();
 		}
 		
@@ -129,7 +134,11 @@ package
 			_currentIndex--;
 			if(_currentIndex < _minIndex)
 				_currentIndex = _minIndex;
-			RefreshImage()
+			var group : int = (int)(_currentIndex / PREVIEW_SHOW_COUNT);
+			if(group != _currentGroup)
+				_currentGroup = group;
+			RefreshGroup();
+			RefreshImage();
 		}
 		
 		private function clickNextItem(evt : MouseEvent) : void
@@ -137,31 +146,15 @@ package
 			_currentIndex++;
 			if(_currentIndex > _maxIndex)
 				_currentIndex = _maxIndex;
-			RefreshImage()
+			var group : int = (int)(_currentIndex / PREVIEW_SHOW_COUNT);
+			if(group != _currentGroup)
+				_currentGroup = group;
+			RefreshGroup();
+			RefreshImage();
 		}
 		
-		private function clickPrevGroup(evt : MouseEvent) : void
+		private function RefreshGroup() : void
 		{
-			prevGroupBtn.visible = true;
-			nextGroupBtn.visible = true;
-			if(--_currentGroup <= _minGroup)
-			{
-				_currentGroup = _minGroup;
-				prevGroupBtn.visible = false;
-			}
-			previewContainer.x = _previewContainerStartX - _currentGroup * PREVIEW_WIDTH_WITH_GAP * PREVIEW_SHOW_COUNT;
-		}
-		
-		private function clickNextGroup(evt : MouseEvent) : void
-		{
-			prevGroupBtn.visible = true;
-			nextGroupBtn.visible = true;
-			
-			if(++_currentGroup >= _maxGroup)
-			{
-				_currentGroup = _maxGroup;
-				nextGroupBtn.visible = false;
-			}
 			previewContainer.x = _previewContainerStartX - _currentGroup * PREVIEW_WIDTH_WITH_GAP * PREVIEW_SHOW_COUNT;
 		}
 		
@@ -173,6 +166,16 @@ package
 				prevItemBtn.visible = false;
 			else if(_currentIndex == _maxIndex)
 				nextItemBtn.visible = false;
+			
+			
+			
+			if(_prePreview)
+			{
+				_prePreview.getChildAt(1).visible = false;
+				_prePreview.scaleX = _prePreview.scaleY = 1;
+			}
+			_prePreview = previewContainer.getChildAt(_currentIndex) as Sprite;
+			_prePreview.getChildAt(1).visible = true;
 			_imageLoader.unload();
 			_imageLoader.load(new URLRequest(_data[_currentIndex]));
 			imageContainer.gotoAndPlay(0);
