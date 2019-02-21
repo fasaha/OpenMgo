@@ -2,6 +2,7 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="openmgo.FramePlayer"/>
+    <classEntry path="openmgo.EnableChecker"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

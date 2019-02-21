@@ -72,7 +72,7 @@ package openmgo
 		
 		private function playFrame(deltaX : Number) : void
 		{
-			trace("playFrame", deltaX);
+			//trace("playFrame", deltaX);
 			if(isNaN(deltaX))
 			{
 				_targetMC.play();
