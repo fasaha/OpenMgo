@@ -49,7 +49,6 @@ package
 			var urlLoader : URLLoader = new URLLoader();
 			urlLoader.addEventListener(Event.COMPLETE, loadXmlComplete);
 			urlLoader.load(new URLRequest("./level2menu.xml"));
-			trace("aaa");
 		}
 		
 		private function loadXmlComplete(evt : Event) : void
@@ -103,7 +102,7 @@ package
 			nextItemBtn.addEventListener(MouseEvent.CLICK, clickNextItem);
 			_imageLoader = new Loader();
 			_imageLoader.addEventListener(Event.COMPLETE, loadImageComplete);
-			imageContainer.addChildAt(_imageLoader, 2);
+			imageContainer.addChildAt(_imageLoader, 0);
 			myLoad();
 		}
 		
@@ -178,7 +177,7 @@ package
 			_prePreview.getChildAt(1).visible = true;
 			_imageLoader.unload();
 			_imageLoader.load(new URLRequest(_data[_currentIndex]));
-			imageContainer.gotoAndPlay(0);
+			imageContainer.gotoAndPlay(1);
 			trace("RefreshImage" + _currentIndex);
 				
 		}
