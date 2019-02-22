@@ -44,19 +44,19 @@ package openmgo
 		private var _prePreview : Sprite;
 		
 		//===================================================start test
-		private function myLoad() : void
-		{
-			var urlLoader : URLLoader = new URLLoader();
-			urlLoader.addEventListener(Event.COMPLETE, loadXmlComplete);
-			urlLoader.load(new URLRequest("./level2menu.xml"));
-		}
-		
-		private function loadXmlComplete(evt : Event) : void
-		{
-			var urlLoader : URLLoader  = evt.target as URLLoader;
-			var xml : XML = new XML(urlLoader.data);
-			setData(xml.item[0].thumb);
-		}
+//		private function myLoad() : void
+//		{
+//			var urlLoader : URLLoader = new URLLoader();
+//			urlLoader.addEventListener(Event.COMPLETE, loadXmlComplete);
+//			urlLoader.load(new URLRequest("./level2menu.xml"));
+//		}
+//		
+//		private function loadXmlComplete(evt : Event) : void
+//		{
+//			var urlLoader : URLLoader  = evt.target as URLLoader;
+//			var xml : XML = new XML(urlLoader.data);
+//			setData(xml.item[0].thumb);
+//		}
 		
 		//===================================================end   test
 		
@@ -69,6 +69,8 @@ package openmgo
 				var container : Sprite = new Sprite();
 				container.buttonMode = true;
 				var loader : MLoader = new MLoader();
+				loader.width = PREVIEW_WIDTH;
+				loader.height = PREVIEW_HEIGHT;
 				loader.index = i;
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadPreviewComplete);
 				loader.load(new URLRequest(_data[i]));
@@ -103,7 +105,7 @@ package openmgo
 			_imageLoader = new Loader();
 			_imageLoader.addEventListener(Event.COMPLETE, loadImageComplete);
 			imageContainer.addChildAt(_imageLoader, 0);
-			myLoad();
+			//myLoad();
 			EnableChecker.getInstance().check(stage);
 		}
 		
@@ -124,6 +126,8 @@ package openmgo
 		private function clickPreview(evt : MouseEvent) : void
 		{
 			var mLoader : MLoader = evt.currentTarget as MLoader;
+			if(_currentIndex == mLoader.index)
+				return;
 			_currentIndex = mLoader.index;
 			RefreshImage();
 		}
@@ -160,14 +164,21 @@ package openmgo
 		
 		private function RefreshImage() : void
 		{
-			prevItemBtn.visible = true;
-			nextItemBtn.visible = true;
+			prevItemBtn.mouseEnabled = true;
+			nextItemBtn.mouseEnabled = true;
+			prevItemBtn.enabled = true;
+			nextItemBtn.enabled = true;
 			if(_currentIndex == _minIndex)
-				prevItemBtn.visible = false;
-			else if(_currentIndex == _maxIndex)
-				nextItemBtn.visible = false;
-			
-			
+			{
+				prevItemBtn.enabled = false;
+				prevItemBtn.mouseEnabled = false;
+			}
+			if(_currentIndex == _maxIndex)
+			{
+				nextItemBtn.enabled = false;
+				nextItemBtn.mouseEnabled = false;
+			}
+				
 			
 			if(_prePreview)
 			{
@@ -179,7 +190,7 @@ package openmgo
 			_imageLoader.unload();
 			_imageLoader.load(new URLRequest(_data[_currentIndex]));
 			imageContainer.gotoAndPlay(1);
-			trace("on RefreshImage" + _currentIndex);
+			trace("RefreshImage" + _currentIndex);
 			
 		}
 		
