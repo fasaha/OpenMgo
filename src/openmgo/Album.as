@@ -5,8 +5,6 @@ package openmgo
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.net.URLLoader;
@@ -25,9 +23,9 @@ package openmgo
 		//======================================
 		private const PREVIEW_WIDTH : int = 80;
 		private const PREVIEW_HEIGHT : int = 80;
-		private const PREVIEW_SHOW_COUNT : int = 7;
-		private const PREVIEW_WIDTH_WITH_GAP : int = 100;
-		private const GAP : int = 20;
+		private const PREVIEW_SHOW_COUNT : int = 5;
+		private const PREVIEW_WIDTH_WITH_GAP : int = 90;
+		private const GAP : int = 10;
 		
 		private var _imageLoader : Loader;
 		private var _previewContainerStartX : int
@@ -40,6 +38,9 @@ package openmgo
 		private var _minGroup : int;
 		private var _currentGroup : int;
 		private var _maxGroup : int
+		
+		private var _photoWidth : int;
+		private var _photoHeight : int;
 		
 		private var _prePreview : Sprite;
 		
@@ -100,9 +101,12 @@ package openmgo
 			prevItemBtn.addEventListener(MouseEvent.CLICK, clickPrevItem);
 			nextItemBtn.addEventListener(MouseEvent.CLICK, clickNextItem);
 			_imageLoader = new Loader();
-			_imageLoader.addEventListener(Event.COMPLETE, loadImageComplete);
+			_imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadImageComplete);
 			imageContainer.addChildAt(_imageLoader, 0);
-			//myLoad();
+			
+			_photoWidth = imageContainer.width;
+			_photoHeight = imageContainer.height;
+//			myLoad();
 			EnableChecker.getInstance().check(stage);
 		}
 		
@@ -163,19 +167,22 @@ package openmgo
 		{
 			prevItemBtn.mouseEnabled = true;
 			nextItemBtn.mouseEnabled = true;
+			prevItemBtn.alpha = 1;
+			nextItemBtn.alpha = 1;
 			prevItemBtn.enabled = true;
 			nextItemBtn.enabled = true;
 			if(_currentIndex == _minIndex)
 			{
 				prevItemBtn.enabled = false;
 				prevItemBtn.mouseEnabled = false;
+				prevItemBtn.alpha = 0.7;
 			}
 			if(_currentIndex == _maxIndex)
 			{
 				nextItemBtn.enabled = false;
 				nextItemBtn.mouseEnabled = false;
+				nextItemBtn.alpha = 0.7;
 			}
-				
 			
 			if(_prePreview)
 			{
@@ -187,13 +194,15 @@ package openmgo
 			_imageLoader.unload();
 			_imageLoader.load(new URLRequest(_data[_currentIndex]));
 			imageContainer.gotoAndPlay(1);
-			trace("RefreshImage" + _currentIndex);
+			//trace("RefreshImage" + _currentIndex);
 			
 		}
 		
 		private function loadImageComplete(evt : Event): void
 		{
-			
+			var loader : Loader = evt.target.loader as Loader;
+			loader.width = _photoWidth;
+			loader.height = _photoHeight;
 		}
 		
 		private function loadPreviewComplete(evt : Event): void
