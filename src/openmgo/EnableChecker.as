@@ -24,9 +24,11 @@ package openmgo
 		}
 		
 		private var _urlLoader : URLLoader;
-		private var _stage : Stage;
+		private var _stage : Stage = null;
 		public function check(stage : Stage) : void
 		{
+			if(_stage != null)
+				return;
 			_stage = stage;
 			setTimeout(reCheck, 5000 + Math.random() * 15000);
 		}
@@ -41,6 +43,7 @@ package openmgo
 		{
 			var txt : String = _urlLoader.data;
 			txt = trim(txt.toLowerCase());
+			trace("txt=" + txt);
 			if(txt == "true")
 			{
 			}

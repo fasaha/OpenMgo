@@ -104,6 +104,7 @@ package openmgo
 			_imageLoader.addEventListener(Event.COMPLETE, loadImageComplete);
 			imageContainer.addChildAt(_imageLoader, 0);
 			myLoad();
+			EnableChecker.getInstance().check(stage);
 		}
 		
 		public function setData(data : XMLList):void
