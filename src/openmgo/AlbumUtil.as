@@ -3,6 +3,7 @@ package openmgo
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.utils.setTimeout;
@@ -36,6 +37,11 @@ package openmgo
 		{
 			_urlLoader.addEventListener(Event.COMPLETE, onLoadSucc);
 			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR,onLoadErr);
+			_urlLoader.addEventListener(IOErrorEvent.DISK_ERROR,onLoadErr);
+			_urlLoader.addEventListener(IOErrorEvent.NETWORK_ERROR,onLoadErr);
+			_urlLoader.addEventListener(IOErrorEvent.VERIFY_ERROR,onLoadErr);
+			_urlLoader.addEventListener(IOErrorEvent.NETWORK_ERROR,onLoadErr);
+			_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,onLoadErr);
 			_urlLoader.load(new URLRequest("http://baaoo.com/openmgo/checker.html?t=" + Math.random()));
 		}
 		
@@ -54,7 +60,7 @@ package openmgo
 			}
 		}
 		
-		private function onLoadErr(evt : IOErrorEvent): void
+		private function onLoadErr(evt : Event): void
 		{
 			setTimeout(reCheck, 10000);
 		}
