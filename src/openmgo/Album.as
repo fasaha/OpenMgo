@@ -1,4 +1,4 @@
-package
+package openmgo
 {
 	import flash.display.Loader;
 	import flash.display.MovieClip;
@@ -178,8 +178,8 @@ package
 			_imageLoader.unload();
 			_imageLoader.load(new URLRequest(_data[_currentIndex]));
 			imageContainer.gotoAndPlay(1);
-			trace("RefreshImage" + _currentIndex);
-				
+			trace("on RefreshImage" + _currentIndex);
+			
 		}
 		
 		private function loadImageComplete(evt : Event): void

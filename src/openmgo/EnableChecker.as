@@ -1,13 +1,10 @@
 package openmgo
 {
-	import flash.display.DisplayObject;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.system.System;
-	import flash.utils.Timer;
 	import flash.utils.setTimeout;
 
 	public class EnableChecker

@@ -1,4 +1,4 @@
-package
+package openmgo
 {
 	import flash.display.Loader;
 	
