@@ -96,9 +96,6 @@ package openmgo
 		
 		public function Album()
 		{
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			
 			previewContainer.mask = previewMask;
 			prevItemBtn.addEventListener(MouseEvent.CLICK, clickPrevItem);
 			nextItemBtn.addEventListener(MouseEvent.CLICK, clickNextItem);
