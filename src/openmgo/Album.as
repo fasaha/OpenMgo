@@ -62,6 +62,12 @@ package openmgo
 		//===================================================end   test
 		
 		
+		public function dispose(): void
+		{
+			_videoPlayer.dispose();
+			_imageLoader.unload();
+		}
+		
 		private function InitPreview() : void
 		{
 			previewContainer.removeChildren(0);
@@ -103,8 +109,8 @@ package openmgo
 			_imageLoader = new Loader();
 			_videoPlayer = new VideoPlayer(imageContainer.width, imageContainer.height);
 			_imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadImageComplete);
-			imageContainer.addChild(_imageLoader);
-			imageContainer.addChild(_videoPlayer);
+			imageContainer.addChildAt(_imageLoader, 0);
+			imageContainer.addChildAt(_videoPlayer, 0);
 			
 			_photoWidth = imageContainer.width;
 			_photoHeight = imageContainer.height;
