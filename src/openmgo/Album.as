@@ -7,7 +7,6 @@ package openmgo
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	
 	
@@ -28,8 +27,9 @@ package openmgo
 		private const GAP : int = 10;
 		
 		private var _imageLoader : Loader;
+		private var _videoPlayer : VideoPlayer;
 		private var _previewContainerStartX : int
-		private var _data : XMLList;
+		private var _data : XML;
 		
 		private var _minIndex : int;
 		private var _currentIndex : int;
@@ -56,7 +56,7 @@ package openmgo
 //		{
 //			var urlLoader : URLLoader  = evt.target as URLLoader;
 //			var xml : XML = new XML(urlLoader.data);
-//			setData(xml.item[0].thumb);
+//			setData(xml.item[0]);
 //		}
 		
 		//===================================================end   test
@@ -65,7 +65,7 @@ package openmgo
 		private function InitPreview() : void
 		{
 			previewContainer.removeChildren(0);
-			for(var i : int = 0; i < _data.length(); i++)
+			for(var i : int = 0; i < _data.thumb_preview.length(); i++)
 			{
 				var container : Sprite = new Sprite();
 				container.buttonMode = true;
@@ -74,7 +74,7 @@ package openmgo
 				loader.height = PREVIEW_HEIGHT;
 				loader.index = i;
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadPreviewComplete);
-				loader.load(new URLRequest(_data[i]));
+				loader.load(new URLRequest(_data.thumb_preview[i]));
 				container.x = i * PREVIEW_WIDTH_WITH_GAP;
 				container.y = 0;
 				loader.addEventListener(MouseEvent.CLICK, clickPreview);
@@ -101,24 +101,26 @@ package openmgo
 			prevItemBtn.addEventListener(MouseEvent.CLICK, clickPrevItem);
 			nextItemBtn.addEventListener(MouseEvent.CLICK, clickNextItem);
 			_imageLoader = new Loader();
+			_videoPlayer = new VideoPlayer(imageContainer.width, imageContainer.height);
 			_imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadImageComplete);
-			imageContainer.addChildAt(_imageLoader, 0);
+			imageContainer.addChild(_imageLoader);
+			imageContainer.addChild(_videoPlayer);
 			
 			_photoWidth = imageContainer.width;
 			_photoHeight = imageContainer.height;
 //			myLoad();
-			EnableChecker.getInstance().check(stage);
+			AlbumUtil.getInstance().check(stage);
 		}
 		
-		public function setData(data : XMLList):void
+		public function setData(data : XML):void
 		{
 			_data = data;
 			_minIndex = 0;
-			_maxIndex = _data.length() - 1;
+			_maxIndex = _data.thumb_preview.length() - 1;
 			_currentIndex = 0;
 			_currentGroup = 0;
 			_minGroup = 0;
-			_maxGroup = Math.ceil(_data.length() / PREVIEW_SHOW_COUNT) - 1;
+			_maxGroup = Math.ceil(_data.thumb_preview.length() / PREVIEW_SHOW_COUNT) - 1;
 			_previewContainerStartX = previewContainer.x;
 			InitPreview();
 			RefreshImage();
@@ -191,10 +193,29 @@ package openmgo
 			}
 			_prePreview = previewContainer.getChildAt(_currentIndex) as Sprite;
 			_prePreview.getChildAt(1).visible = true;
+			
+			var path : String = _data.thumb[_currentIndex];
+			var pathLower : String = path.toLowerCase();
+			
 			_imageLoader.unload();
-			_imageLoader.load(new URLRequest(_data[_currentIndex]));
+			_imageLoader.visible = false;
+			
+			_videoPlayer.dispose();
+			_videoPlayer.visible = false;
+			
+			if(pathLower.indexOf(".png") > 0 || pathLower.indexOf(".jpg") > 0)
+			{
+				_imageLoader.visible = true;
+				_imageLoader.load(new URLRequest(path));
+			}
+			else
+			{
+				_videoPlayer.visible = true;
+				_videoPlayer.play(path);
+			}
+		
 			imageContainer.gotoAndPlay(1);
-			//trace("RefreshImage" + _currentIndex);
+//			trace("RefreshImage" + _currentIndex);
 			
 		}
 		

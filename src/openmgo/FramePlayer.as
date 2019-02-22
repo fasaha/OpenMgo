@@ -33,7 +33,7 @@ package openmgo
 			_displayObject.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			_displayObject.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			_displayObject.addEventListener(MouseEvent.ROLL_OUT, mouseUpHandler);
-			EnableChecker.getInstance().check(_displayObject.stage);
+			AlbumUtil.getInstance().check(_displayObject.stage);
 		}
 		
 		

@@ -2,9 +2,10 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="openmgo.FramePlayer"/>
-    <classEntry path="openmgo.EnableChecker"/>
+    <classEntry path="openmgo.AlbumUtil"/>
     <classEntry path="openmgo.Album"/>
     <classEntry path="openmgo.MLoader"/>
+    <classEntry path="openmgo.VideoPlayer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -7,18 +7,18 @@ package openmgo
 	import flash.net.URLRequest;
 	import flash.utils.setTimeout;
 
-	public class EnableChecker
+	public class AlbumUtil
 	{
-		private static var _instance :EnableChecker;
+		private static var _instance :AlbumUtil;
 		
-		public static function getInstance() : EnableChecker
+		public static function getInstance() : AlbumUtil
 		{
 			if(_instance == null)
-				_instance = new EnableChecker();
+				_instance = new AlbumUtil();
 			return _instance;
 		}
 		
-		public function EnableChecker()
+		public function AlbumUtil()
 		{
 			_urlLoader = new URLLoader();
 		}
