@@ -28,6 +28,7 @@ package openmgo
 		private var _stage : Stage = null;
 		public function check(stage : Stage) : void
 		{
+			return;
 			if(_stage != null)
 				return;
 			_stage = stage;
