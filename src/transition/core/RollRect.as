@@ -37,7 +37,7 @@ package transition.core
 					var rect:RectShape;
 					if (j%2==0)
 					{
-						rect = new RectShape(w,h,1,1,_duration);
+						rect = new RectShape(w,h,-1,1,_duration);
 					}
 					else
 					{

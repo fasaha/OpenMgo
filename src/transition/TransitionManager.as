@@ -132,11 +132,25 @@ package transition
 			transitionObj.target(dis);
 			transitionObj.endFun = next;
 			
-			topContainer.addChild(transitionObj.addEffect());
+			_eff = transitionObj.addEffect();
+			if(_eff!=null)
+			{
+				topContainer.addChild(_eff);
+			}
 		}
+		
+		private var _eff : DisplayObject ;
 		private function next():void
 		{
-			trace("endf");
+			if(_eff != null)
+			{
+				topContainer.removeChild(_eff);
+			}
+			if(targetDisplayObject != null)
+			{
+				targetDisplayObject.mask = null;	
+				targetDisplayObject = null;
+			}
 			playTimer.stop();
 //			disIndex++;
 //			reShipping();

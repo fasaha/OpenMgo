@@ -67,8 +67,6 @@ package transition.core
 			if ((container.getChildAt(0) as RectShape).scaleX == 1)
 			{
 				timer.stop();
-				_target.mask = null;
-				container.parent.removeChild(container);
 				if (endFun != null) endFun();
 				destroy();
 			}

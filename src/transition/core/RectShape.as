@@ -38,7 +38,7 @@ package transition.core
 		{
 			if (changeX)
 			{
-				this.scaleX += 0.02;
+				this.scaleX += 0.08;
 				if (Math.abs(this.scaleX) > 0.99)
 				{
 					this.scaleX = 1;
@@ -47,7 +47,7 @@ package transition.core
 			}
 			if (changeY)
 			{
-				this.scaleY += 0.02;
+				this.scaleY += 0.08;
 				if (Math.abs(this.scaleY) > 0.99)
 				{
 					this.scaleY = 1;

@@ -15,12 +15,13 @@ package transition.core
 			super(duration);
 		}
 		
-		override public function target(tar:DisplayObject):void
+		public override function addEffect():DisplayObject
 		{
-			super.target(tar);
+			super.addEffect();
 			_target.alpha = 0.1;
-			
+			return null;
 		}
+		
 		override protected function onTimer(e:TimerEvent):void
 		{
 			_target.alpha *= 1.1;

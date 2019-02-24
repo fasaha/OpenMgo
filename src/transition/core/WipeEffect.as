@@ -37,7 +37,6 @@ package transition.core
 		}
 		override protected function onTimer(e:TimerEvent):void
 		{
-			trace(shape.scaleX);
 			if (shape.scaleX == 1)
 			{
 				timer.stop();
