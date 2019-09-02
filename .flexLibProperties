@@ -6,6 +6,8 @@
     <classEntry path="openmgo.Album"/>
     <classEntry path="openmgo.MLoader"/>
     <classEntry path="openmgo.VideoPlayer"/>
+    <classEntry path="openmgo.SoundMgr"/>
+    <classEntry path="openmgo.SoundMgrBase"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
