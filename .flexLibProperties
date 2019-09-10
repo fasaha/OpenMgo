@@ -8,6 +8,7 @@
     <classEntry path="openmgo.VideoPlayer"/>
     <classEntry path="openmgo.SoundMgr"/>
     <classEntry path="openmgo.SoundMgrBase"/>
+    <classEntry path="openmgo.MURLLoader"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
