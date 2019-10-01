@@ -9,6 +9,7 @@
     <classEntry path="openmgo.SoundMgr"/>
     <classEntry path="openmgo.SoundMgrBase"/>
     <classEntry path="openmgo.MURLLoader"/>
+    <classEntry path="doc3.Doc1"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

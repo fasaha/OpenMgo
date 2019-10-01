@@ -65,7 +65,7 @@ package openmgo
 			}
 			
 			_loop = loop;
-			_soundChannel = _sound.play(0, _loop ? int.MAX_VALUE : 0 , new SoundTransform(_volume));
+			_soundChannel = _sound.play(0, _loop ? int.MAX_VALUE : 0 , new SoundTransform(_volume * _volumeQuietrRatio));
 		}
 		
 		public function stop() : void
@@ -99,7 +99,7 @@ package openmgo
 			{
 				if(_pos >= 0)
 				{
-					_soundChannel = _sound.play(_pos, 0, new SoundTransform(_volume));
+					_soundChannel = _sound.play(_pos, 0, new SoundTransform(_volume * _volumeQuietrRatio));
 					if(_loop)
 					{
 						_soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
@@ -117,7 +117,7 @@ package openmgo
 		{
 			if(_soundChannel == null)
 				return;
-			_soundChannel = _sound.play(0, int.MAX_VALUE, new SoundTransform(_volume));
+			_soundChannel = _sound.play(0, int.MAX_VALUE, new SoundTransform(_volume * _volumeQuietrRatio));
 		}
 		
 		

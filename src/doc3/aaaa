@@ -1,0 +1,244 @@
+import flash.media.Sound;
+import flash.display.DisplayObject;
+import flash.display.Loader;
+import flash.display.MovieClip;
+
+screenSaver.reloadBtn1.addEventListener(MouseEvent.CLICK, onClickReload1);
+
+stage.displayState=StageDisplayState.FULL_SCREEN;
+screenSaver.addEventListener(MouseEvent.CLICK, onClickHideScreenSaver);
+
+showScreenSaver(true);
+
+var secondMcLoader : Loader;
+
+function onClickHideScreenSaver(evt : MouseEvent) : void
+{
+	showScreenSaver(false);
+}
+bgMC.stop();
+function showScreenSaver(show : Boolean) : void
+{
+	trace("showScreenSaver:" + show)
+	screenSaver.visible = show;
+
+	if (show)
+	{
+		screenSaver.play();
+		this.stop();
+		stopSound();
+		playBgSound(false);
+		SetChildrenShow(false);
+		//bgMC.stop();
+	}
+	else
+	{
+		screenSaver.stop();
+		this.play();
+		playBgSound(true);
+		SetChildrenShow(true);
+		//setBGVolume(bgSndVolumeNormal)
+		//bgMC.play();
+	}
+}
+
+function SetChildrenShow(show) : void
+{
+	for ( var i : int  = 0; i < this.numChildren; i++)
+	{
+		var child : DisplayObject = this.getChildAt(i);
+		if(child is Loader)
+		{
+			child.visible = show;
+			if(show)
+			{
+				var loader : Loader = child as Loader;
+				var mc : MovieClip = loader.getChildAt(0) as MovieClip;
+				if(mc != null)
+				{
+					if(mc.hideScreenSaver)
+					{
+						mc.hideScreenSaver.call();
+					}
+					
+				}
+				
+			}
+			
+			
+		}
+		//this.getChildAt(i).visible = show;
+	}
+}
+
+
+var snd : Sound;
+var sndCH : SoundChannel;
+var sndT : SoundTransform = new SoundTransform(1);
+
+//var bgSndVolumeNormal : Number = 0.3;
+//var bgSndVolumeQuiet : Number = 0.3;
+
+var prevSndCls : Class;
+stopSound();
+
+function onClickReload1(evt:MouseEvent) : void
+{
+	if (secondMcLoader && this.contains(secondMcLoader))
+	{
+	this.removeChild(secondMcLoader);
+	secondMcLoader = null;
+	this.removeEventListener(Event.ENTER_FRAME, checkOpenedSecView);
+	}
+	stopSound();
+	prevSndCls = null;
+	gotoAndPlay(2);
+}
+
+function setEffVolume(volume : Number) : void
+{
+	sndT.volume = volume;
+	if(sndCH != null)
+	{
+		sndCH.soundTransform = sndT;
+	}
+}
+
+function playSound(cls : Class, volume : Number = 1) : void
+{
+	if (isMute)
+		return;
+	if(chartContainer && chartContainer.visible)
+	{
+		return;//K线图开着不播放声音
+	}
+
+	if (secondMcLoader && this.contains(secondMcLoader))
+	{
+		return;//二级界面开着，不播放声音
+	}
+	stopSound();
+	if (prevSndCls == cls)
+		return;
+	prevSndCls = cls;
+	snd = new cls();
+	sndT.volume = soundVolume * volume;
+	sndCH = snd.play(0, 0, sndT);
+	sndCH.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+	//setBGVolume(bgSndVolumeQuiet)
+	
+	//sndCH.soundTransform = sndT;
+	
+}
+
+function stopSound():void
+{
+	if (sndCH != null)
+	{
+		sndCH.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+		sndCH.stop();
+		sndCH = null;
+		//setBGVolume(bgSndVolumeNormal)
+	}
+
+}
+
+
+function onSoundComplete(evt: Event)
+{
+	trace("onSoundComplete a");
+	//setBGVolume(bgSndVolumeNormal)
+}
+
+//-----------------------------BG_SOUND
+var bgSndCH : SoundChannel;
+var bgSnd : Sound;
+var bgSndT : SoundTransform = new SoundTransform(0.3);
+var bgVolumeDelta : Number = 1;
+
+function setBgVolumeDelta(delta) : void
+{
+	bgVolumeDelta = delta;
+	setBGVolume(soundVolume)
+}
+setBgVolumeDelta(1);
+
+
+function setBGVolume(volume : Number) : void
+{
+	bgSndT.volume = volume * bgVolumeDelta * 0.7;
+	if(bgSndCH != null)
+	{
+		
+		bgSndCH.soundTransform = bgSndT;
+	}
+}
+		
+function playBgSound(play : Boolean):void
+{
+	if (play && isMute)
+		return;
+	if(play)
+	{
+		if(bgSndCH == null)
+		{
+			if( bgSnd == null)
+			{
+				bgSnd = new BgSoundClass();
+			}
+			bgSndCH = bgSnd.play(0, int.MAX_VALUE, bgSndT);
+		}
+	}
+	else
+	{
+		if (bgSndCH != null)
+		{
+			bgSndCH.stop();
+			bgSndCH = null;
+		}
+	}
+		
+}
+
+var isMute : Boolean = false;
+function muteAllSound(mute : Boolean)
+{
+	isMute = mute;
+	if(isMute)
+	{
+		playBgSound(false);
+		stopSound();
+		SoundMixer.stopAll();
+	}
+	else
+	{
+		playBgSound(true);
+	}
+}
+
+
+var soundVolume : Number = 1
+
+function changeVolume(isPlus : Boolean)
+{
+	if(isPlus)
+	{
+		soundVolume += 0.2;
+	}
+	else
+	{
+		soundVolume -= 0.2;
+	}
+	if (soundVolume < 0)
+		soundVolume = 0;
+	else if(soundVolume > 1)
+		soundVolume = 1;
+	
+	trace("changeVolume=" + soundVolume)
+	setBGVolume(soundVolume);
+	setEffVolume(soundVolume);
+}
+
+setBGVolume(soundVolume);
+setEffVolume(soundVolume);
+

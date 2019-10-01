@@ -1,0 +1,385 @@
+import flash.events.MouseEvent;
+import flash.net.URLRequest;
+import flash.display.Loader;
+
+//import openmgo.VideoPlayer;
+
+//var videoPlayer : VideoPlayer;
+
+var startFrameVector:Vector.<int> = new <int>[325, 468, 622, 751, 898, 1032, 1155, 1297, 1406];
+var endFrameVector: Vector.<int> = new <int>[454, 608, 735, 884, 1018, 1141, 1283, 1392, 1604];
+var currentIndex : int = 0;
+//if (isAutoPlay == null)
+//{
+	var isAutoPlay = true;
+//}
+
+
+
+init();
+setBgVolumeDelta(0.4);
+
+if (timer == null)
+{
+	//var timer : Timer = new Timer(30000, 0);
+	var timer : Timer = new Timer(180000, 0);
+	timer.addEventListener(TimerEvent.TIMER, onTimer);
+	timer.start();;
+}
+
+function init() :void
+{
+
+	mediaMC.addEventListener(MouseEvent.CLICK, onClickMediaMC);
+	ctrlPanel.menuBtn.addEventListener(MouseEvent.CLICK, onClickMenu);
+	ctrlPanel.prevBtn.addEventListener(MouseEvent.CLICK, onClickPrev);
+	ctrlPanel.nextBtn.addEventListener(MouseEvent.CLICK, onClickNext);
+	ctrlPanel.reloadBtn.addEventListener(MouseEvent.CLICK, onClickReload);
+	ctrlPanel.screenSaverBtn.addEventListener(MouseEvent.CLICK, onClickShowScreenSaver);
+	//ctrlPanel.soundSwitcherBtn.addEventListener(MouseEvent.CLICK, onClickSoundSwitcher);
+	
+	ctrlPanel.soundPlusBtn.addEventListener(MouseEvent.CLICK, onClickSoundPlus);
+	ctrlPanel.soundMinusBtn.addEventListener(MouseEvent.CLICK, onClickSoundMinus);
+	
+	
+	
+	ctrlPanel.manualPlayBtn.addEventListener(MouseEvent.CLICK, onClickManualPlay);
+	ctrlPanel.autoPlayBtn.addEventListener(MouseEvent.CLICK, onClickAutoPlay);
+	chartContainer.closeBtn.addEventListener(MouseEvent.CLICK, onClickCloseChart);
+	//ctrlPanel.videoBtn.visible = false;
+	//ctrlPanel.videoBtn.addEventListener(MouseEvent.CLICK, onClickVideo);
+	
+	//videoContainer.closeBtn.addEventListener(MouseEvent.CLICK, onClickCloseVideo);
+	//videoPlayer = videoPlayer = new VideoPlayer(stage.width, stage.height);
+	//videoContainer.addChildAt(videoPlayer, 0);
+	//videoContainer.visible = false;
+	
+	updatePrevNextVisible();
+	setAutoPlay(isAutoPlay);
+	
+	stage.addEventListener(MouseEvent.CLICK, onMouseStage)
+	stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseStage);
+	
+	
+}
+
+function onClickShowScreenSaver(evt:MouseEvent):void
+{
+	showScreenSaver(true); 
+}
+
+
+
+function onClickSoundPlus(evt:MouseEvent):void
+{
+	changeVolume(true);
+}
+
+function onClickSoundMinus(evt:MouseEvent):void
+{
+	changeVolume(false);
+}
+
+/*function onClickSoundSwitcher(evt:MouseEvent):void
+{
+	muteAllSound(!isMute);
+	updateSoundSwitcher();
+}*/
+
+/*updateSoundSwitcher();
+function updateSoundSwitcher()
+{
+	if (isMute)
+	{
+		ctrlPanel.soundSwitcherBtn.gotoAndStop(1);
+	}
+	else
+	{
+		ctrlPanel.soundSwitcherBtn.gotoAndStop(2);
+	}
+}*/
+
+
+function onTimer(evt:TimerEvent):void
+{
+	showScreenSaver(true); 
+}
+
+function onMouseStage(evt:MouseEvent) : void
+{
+	timer.reset();
+	timer.start();
+}
+
+
+
+
+function onClickMediaMC(evt:MouseEvent):void
+{
+	stopSound();
+//	trace("currentIndex=" + currentIndex);
+	switch(currentIndex)
+	{
+		case 0:
+		{
+			secondMcLoader = load("20190429-2-公司历程-1.swf");
+			break;
+		}
+		case 1:
+		{
+			secondMcLoader = load("20190429-2-公司历程-2.swf");
+			break;
+		}
+		case 2:
+		{
+			secondMcLoader = load("20190429-2-公司历程-3.swf");
+			break;
+		}
+		case 3:
+		{
+			secondMcLoader = load("20190429-2-公司历程-4.swf");
+			break;
+		}
+		case 4:
+		{
+			secondMcLoader = load("20190429-2-公司历程-5.swf");
+			break;
+		}
+		case 5:
+		{
+			secondMcLoader = load("20190429-2-公司历程-6.swf");
+			break;
+		}
+		case 6:
+		{
+			secondMcLoader = load("20190429-2-公司历程-7.swf");
+			break;
+		}
+		case 7:
+		{
+			secondMcLoader = load("20190429-2-公司历程-8.swf");
+			break;
+		}
+		case 8:
+		{
+			secondMcLoader = load("20190429-2-公司历程-9.swf");
+			break;
+		}
+			
+		default:
+		{
+			break;
+		}
+	}
+	
+	openSecView();
+}
+
+
+function openSecView() : void
+{	
+	if(isAutoPlay)
+	{
+		setAutoPlay(false);
+		this.addEventListener(Event.ENTER_FRAME, checkOpenedSecView);
+	}
+}
+
+function checkOpenedSecView(evt : Event) : void
+{
+	if(chartContainer.visible)
+	{
+		return;
+	}
+
+	if (secondMcLoader && this.contains(secondMcLoader))
+	{
+		return;
+	}
+	setAutoPlay(true);
+	this.removeEventListener(Event.ENTER_FRAME, checkOpenedSecView);
+}
+
+		
+
+
+function updatePrevNextVisible() : void
+{
+	if (currentIndex == 0)
+	{
+		ctrlPanel.nextBtn.visible = true;
+		ctrlPanel.prevBtn.visible = false;
+		
+	}
+	else if(currentIndex == endFrameVector.length - 1)
+	{
+		ctrlPanel.nextBtn.visible = false;
+		ctrlPanel.prevBtn.visible = true;
+	}
+	else
+	{
+		ctrlPanel.nextBtn.visible = true;
+		ctrlPanel.prevBtn.visible = true;
+	}
+	
+}
+
+//start chart交互相关-------------------------------------------------------------
+hideChart();
+function onClickMenu(evt:MouseEvent) : void
+{
+	showChart();
+}
+
+function onClickCloseChart(evt: MouseEvent) : void
+{
+	hideChart();
+}
+var chartloaderInfo : LoaderInfo;
+var chartLoader : Loader;
+
+function hideChart() : void
+{
+	//play();
+	chartContainer.visible = false;
+	if (chartLoader != null) 
+	{
+		chartContainer.removeChild(chartLoader);
+		chartLoader = null;
+	}
+}
+
+function showChart() : void
+{
+	stopSound();
+	//stop();
+	chartContainer.visible = true;
+	if (chartLoader == null)
+	{
+		chartLoader = new Loader();
+		chartContainer.addChild(chartLoader);
+		chartContainer.setChildIndex(chartContainer.closeBtn, chartContainer.numChildren - 1);
+		
+		chartLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadChartComplete);
+		chartLoader.load(new URLRequest("20190429-3-timeline.swf"));
+	}
+	openSecView();
+}
+		
+		
+function clickPhotoItem(index : int) : void
+{
+	//trace("-----clickPhotoItem", index);
+	hideChart();
+	currentIndex = index;
+	if(currentIndex < 0)
+	{
+		currentIndex = 0;
+	}
+	else if(currentIndex > startFrameVector.length - 1)
+	{
+		currentIndex = startFrameVector.length - 1;
+	}
+	gotoAndPlay(startFrameVector[currentIndex]);
+	updatePrevNextVisible();
+}
+
+
+function onLoadChartComplete(evt : Event) : void
+{
+	chartloaderInfo = evt.target as LoaderInfo;
+	chartloaderInfo.removeEventListener(Event.COMPLETE, onLoadChartComplete);
+	
+	this.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+}
+
+function enterFrameHandler(evt : Event) : void
+{
+	if (chartloaderInfo.applicationDomain.hasDefinition("PhotoItem"))
+	{
+		this.removeEventListener(Event.ENTER_FRAME, enterFrameHandler)
+		chartloaderInfo.applicationDomain.getDefinition("PhotoItem").clickSelf = clickPhotoItem;
+		chartloaderInfo = null;
+	}
+}
+//end chart交互相关----------------------------------------------------------------
+
+function onClickPrev(evt:MouseEvent) : void
+{
+	currentIndex -= 1;
+	if(currentIndex < 0)
+	{
+		currentIndex = 0;
+	}
+	gotoAndPlay(startFrameVector[currentIndex]);
+	updatePrevNextVisible();
+}
+
+
+function onClickNext(evt:MouseEvent) : void
+{
+	currentIndex += 1;
+	if(currentIndex > endFrameVector.length - 1)
+	{
+		currentIndex = endFrameVector.length - 1;
+	}
+	gotoAndPlay(endFrameVector[currentIndex - 1])
+	updatePrevNextVisible();
+}
+
+
+function onClickReload(evt:MouseEvent) : void
+{
+	stopSound();
+	prevSndCls = null;
+	setBgVolumeDelta(1);
+	
+	gotoAndPlay(2);
+}
+
+function onClickAutoPlay(evt:MouseEvent):void
+{
+	setAutoPlay(true);
+	
+	if(currentFrame >= startFrameVector[startFrameVector.length - 1])
+	{
+		stopSound();
+		gotoAndPlay(endFrameVector[endFrameVector.length - 1])
+	}
+}
+
+function onClickManualPlay(evt:MouseEvent):void
+{
+	setAutoPlay(false);
+}
+
+function setAutoPlay(isAuto) :  void
+{
+	isAutoPlay = isAuto
+	if (ctrlPanel)
+	{
+		ctrlPanel.gotoAndStop(isAutoPlay ? 2 : 1);
+	}
+	
+}
+
+function onClickVideo(evt:MouseEvent) : void
+{
+	
+	//videoContainer.visible = true;
+	//videoPlayer.play("res/20190419-历程-fa.mp4");
+}
+
+function onClickCloseVideo(evt : MouseEvent):void
+{
+	//videoContainer.visible = false;
+	//videoPlayer.dispose();
+}
+
+function load( swf:String) : Loader
+{
+	var loader : Loader = new Loader();
+	loader.load(new URLRequest(swf));
+	addChild(loader);
+	return loader;
+}
