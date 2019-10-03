@@ -6,6 +6,7 @@ package doc3
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import openmgo.ReplaceUtil;
 	import openmgo.SoundMgr;
 	
 	import sound.BgSnd;
@@ -26,9 +27,12 @@ package doc3
 		private var _timer : Timer;
 		private var _soundVolume : int = 100;
 		
+		protected var configFolder : String;
+		
 		
 		public function Doc1_Abstract()
 		{
+			initParam();
 			SoundMgr.getSoundMgrBg().volumeQuietrRatio = 0.9;
 			SoundMgr.getSoundMgrEff().volumeQuietrRatio = 1;
 			initCtrlPanel();
@@ -36,7 +40,22 @@ package doc3
 			
 			changeVolume(true);
 			
+			stop();
+			ReplaceUtil.baseUrl = "./res/" + configFolder + "/";
+			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig)
 		}
+		
+		protected function initParam() : void
+		{
+			
+		}
+		
+		private function onLoadedConfig() : void
+		{
+			ReplaceUtil.replace(this);
+			play();
+		}
+		
 		
 		private function initCtrlPanel() : void
 		{

@@ -3,6 +3,7 @@ package doc3
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	
+	import openmgo.ReplaceUtil;
 	import openmgo.SoundMgr;
 	
 	public class Doc2_Abstract extends MovieClip
@@ -18,6 +19,7 @@ package doc3
 		public var subMc6 : MovieClip;
 		protected var startFrameVectorVector : Vector.<Vector.<int>>;
 		protected var endFrameVectorVector : Vector.<Vector.<int>>;
+		protected var configFolder : String;
 		
 		
 		private var _startFrameVector:Vector.<int>;
@@ -32,8 +34,24 @@ package doc3
 		
 		public function Doc2_Abstract()
 		{
+			initParam();
 			rootMc = this.parent.parent as Doc1_Abstract;
 			initCtrlPanel();
+			
+			stop();
+			ReplaceUtil.baseUrl = "./res/" + configFolder + "/";
+			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig)
+		}
+		
+		protected function initParam() : void
+		{
+			
+		}
+		
+		private function onLoadedConfig() : void
+		{
+			ReplaceUtil.replace(this);
+			play();
 		}
 		
 		private function initCtrlPanel() : void
