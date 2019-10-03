@@ -1,5 +1,6 @@
 package doc3
 {
+	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -7,22 +8,26 @@ package doc3
 	
 	import openmgo.SoundMgr;
 	
+	import sound.BgSnd;
+	
 
-	public class Doc1 extends MovieClip
+	public class Doc1_Abstract extends MovieClip
 	{
 		public var ctrlPanel : MovieClip;
 		public var screenSaver : MovieClip;
 		
+//		private var BgSnd : Class;
 		
-		private var _startFrameVector:Vector.<int> = new <int>[325, 468, 622, 751, 898, 1032, 1155, 1297, 1406];
-		private var _endFrameVector: Vector.<int> = new <int>[454, 608, 735, 884, 1018, 1141, 1283, 1392, 1604];
+		
+		protected var _startFrameVector:Vector.<int>;
+		protected var _endFrameVector: Vector.<int>;
 		private var _currentIndex : int = 0;
 		private var _isAutoPlay : Boolean = true;
 		private var _timer : Timer;
 		private var _soundVolume : int = 100;
 		
 		
-		public function Doc1()
+		public function Doc1_Abstract()
 		{
 			SoundMgr.getSoundMgrBg().volumeQuietrRatio = 0.9;
 			SoundMgr.getSoundMgrEff().volumeQuietrRatio = 1;
@@ -68,7 +73,7 @@ package doc3
 		}
 		
 		
-		private function showScreenSaver(show : Boolean) : void
+		public function showScreenSaver(show : Boolean) : void
 		{
 //			trace("showScreenSaver:" + show)
 			screenSaver.visible = show;
@@ -171,6 +176,24 @@ package doc3
 			}
 			
 		}
+		
+		
+		private var _childViewLoader : Loader;
+		private function addChildView() : void
+		{
+			
+		}
+		
+		public function removeChildView() : void
+		{
+			if(_childViewLoader)
+			{
+				this.removeChild(_childViewLoader);
+				_childViewLoader = null;
+			}
+		}
+		
+		
 		//-------------------------------------------------------------------------------------------------------------------
 		
 		private function onTimer(evt:TimerEvent):void

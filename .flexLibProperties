@@ -9,7 +9,12 @@
     <classEntry path="openmgo.SoundMgr"/>
     <classEntry path="openmgo.SoundMgrBase"/>
     <classEntry path="openmgo.MURLLoader"/>
-    <classEntry path="doc3.Doc1"/>
+    <classEntry path="doc3.Doc1_Abstract"/>
+    <classEntry path="doc3.Doc2_Abstract"/>
+    <classEntry path="doc3.Doc1_1"/>
+    <classEntry path="doc3.Doc2_1"/>
+    <classEntry path="sound.BgSnd"/>
+    <classEntry path="doc3.Doc2_Sub"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
