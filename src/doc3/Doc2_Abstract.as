@@ -17,6 +17,9 @@ package doc3
 		public var subMc4 : MovieClip;
 		public var subMc5 : MovieClip;
 		public var subMc6 : MovieClip;
+		
+		public var contentRoot : MovieClip;
+		
 		protected var startFrameVectorVector : Vector.<Vector.<int>>;
 		protected var endFrameVectorVector : Vector.<Vector.<int>>;
 		protected var configFolder : String;
@@ -38,7 +41,7 @@ package doc3
 			rootMc = this.parent.parent as Doc1_Abstract;
 			initCtrlPanel();
 			
-			stop();
+			contentRoot.stop();
 			ReplaceUtil.baseUrl = "./res/" + configFolder + "/";
 			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig)
 		}
@@ -51,7 +54,7 @@ package doc3
 		private function onLoadedConfig() : void
 		{
 			ReplaceUtil.replace(this);
-			play();
+			contentRoot.play();
 		}
 		
 		private function initCtrlPanel() : void
@@ -179,7 +182,7 @@ package doc3
 			{
 				_currentIndex = 0;
 			}
-			gotoAndPlay(_startFrameVector[_currentIndex]);
+			contentRoot.gotoAndPlay(_startFrameVector[_currentIndex]);
 			updatePrevNextVisible();
 		}
 		private function onClickNext(evt:MouseEvent) : void
@@ -189,7 +192,7 @@ package doc3
 			{
 				_currentIndex = _endFrameVector.length - 1;
 			}
-			gotoAndPlay(_endFrameVector[_currentIndex - 1])
+			contentRoot.gotoAndPlay(_endFrameVector[_currentIndex - 1])
 			updatePrevNextVisible();
 		}
 		
@@ -209,7 +212,7 @@ package doc3
 			if(currentFrame >= _startFrameVector[_startFrameVector.length - 1])
 			{
 				SoundMgr.getSoundMgrEff().stop();
-				gotoAndPlay(_endFrameVector[_endFrameVector.length - 1])
+				contentRoot.gotoAndPlay(_endFrameVector[_endFrameVector.length - 1])
 			}
 		}
 		

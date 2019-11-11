@@ -16,6 +16,7 @@ package doc3
 	{
 		public var ctrlPanel : MovieClip;
 		public var screenSaver : MovieClip;
+		public var contentRoot : MovieClip;
 		
 //		private var BgSnd : Class;
 		
@@ -40,7 +41,7 @@ package doc3
 			
 			changeVolume(true);
 			
-			stop();
+			contentRoot.stop();
 			ReplaceUtil.baseUrl = "./res/" + configFolder + "/";
 			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig)
 		}
@@ -52,8 +53,8 @@ package doc3
 		
 		private function onLoadedConfig() : void
 		{
-			ReplaceUtil.replace(this);
-			play();
+			ReplaceUtil.replace(contentRoot);
+			contentRoot.play();
 		}
 		
 		
@@ -98,7 +99,7 @@ package doc3
 			screenSaver.visible = show;
 			if (show)
 			{
-				this.stop();
+				contentRoot.stop();
 				SoundMgr.getSoundMgrBg().stop();
 				SoundMgr.getSoundMgrEff().stop();
 //				stopSound();
@@ -106,7 +107,7 @@ package doc3
 			}
 			else
 			{
-				this.play();
+				contentRoot.play();
 				SoundMgr.getSoundMgrBg().play(BgSnd,true);
 //				SoundMgr.getSoundMgrBg().volume = 
 //				playBgSound(true);
@@ -234,7 +235,7 @@ package doc3
 			//				this.removeEventListener(Event.ENTER_FRAME, checkOpenedSecView);
 			//			}
 			SoundMgr.getSoundMgrEff().stop();
-			gotoAndPlay(2);
+			contentRoot.gotoAndPlay(2);
 		}
 		
 		private function onClickStage(evt:MouseEvent) : void
@@ -255,7 +256,7 @@ package doc3
 			{
 				_currentIndex = 0;
 			}
-			gotoAndPlay(_startFrameVector[_currentIndex]);
+			contentRoot.gotoAndPlay(_startFrameVector[_currentIndex]);
 			updatePrevNextVisible();
 		}
 		private function onClickNext(evt:MouseEvent) : void
@@ -265,13 +266,13 @@ package doc3
 			{
 				_currentIndex = _endFrameVector.length - 1;
 			}
-			gotoAndPlay(_endFrameVector[_currentIndex - 1])
+			contentRoot.gotoAndPlay(_endFrameVector[_currentIndex - 1])
 			updatePrevNextVisible();
 		}
 		private function onClickReload(evt:MouseEvent) : void
 		{
 			SoundMgr.getSoundMgrEff().stop();
-			gotoAndPlay(2);
+			contentRoot.gotoAndPlay(2);
 		}
 		private function onClickShowScreenSaver(evt:MouseEvent) : void
 		{
@@ -296,7 +297,7 @@ package doc3
 			if(currentFrame >= _startFrameVector[_startFrameVector.length - 1])
 			{
 				SoundMgr.getSoundMgrEff().stop();
-				gotoAndPlay(_endFrameVector[_endFrameVector.length - 1])
+				contentRoot.gotoAndPlay(_endFrameVector[_endFrameVector.length - 1])
 			}
 		}
 		

@@ -5,8 +5,8 @@ package doc3
 		
 		protected override function initParam() : void
 		{
-			_startFrameVector = new <int>[325, 468, 622, 751, 898, 1032, 1155, 1297, 1406];
-			_endFrameVector = new <int>[454, 608, 735, 884, 1018, 1141, 1283, 1392, 1604];
+			_startFrameVector = new <int>[1, 98, 195, 291, 388, 485, 582];
+			_endFrameVector = new <int>[97, 194, 290, 387, 484, 581, 678];
 			
 			configFolder = "1_1";
 		}
