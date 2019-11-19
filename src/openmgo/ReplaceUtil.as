@@ -11,6 +11,9 @@ package openmgo
 
 	public class ReplaceUtil
 	{
+		public static var defaultImageId : String = "1001";
+		public  static var defaultTextId : String = "1001";
+		
 		
 		public static var baseUrl : String = "";
 		private static var REPLACE_BITMAP_NAME : String = "replacebmp_";
@@ -21,6 +24,8 @@ package openmgo
 		
 		public static function replace(mc : MovieClip) : void
 		{
+			if(imgDic == null || txtDic == null)
+				return;
 			for(var i : int = 0, count : int = mc.numChildren; i < count; i++)
 			{
 				var displayObject : DisplayObject = mc.getChildAt(i);
@@ -38,6 +43,8 @@ package openmgo
 				{
 					var text : String = txtDic[ displayObject.name.substr(REPLACE_TEXT_NAME.length)];
 					//trace("Find textfield~~~~~~~~~~~~" + displayObject.name);
+					if(text == null)
+						text = txtDic[defaultTextId];
 					if(text != null)
 					{
 						(displayObject as TextField).text = text;
@@ -54,9 +61,10 @@ package openmgo
 		
 		public static function loadImage(id : String, bmp : Bitmap) : void
 		{
+			
 			var path : String = imgDic[id];
 			if(path == null)
-				return;
+				path = imgDic[defaultImageId];
 			var loader : MLoader = new MLoader();
 			loader.data = bmp;
 			loader.load(new URLRequest(baseUrl + path));
@@ -76,14 +84,17 @@ package openmgo
 			}
 			var mLoader : MLoader = loaderInfo.loader as MLoader;
 			var bmp : Bitmap = mLoader.data as Bitmap;
-			var index : int = bmp.parent.getChildIndex(bmp);
-			bmp.parent.addChildAt(loadedDisplayObject, index + 1);
-			
-			loadedDisplayObject.x = bmp.x;
-			loadedDisplayObject.y = bmp.y;
-			loadedDisplayObject.width = bmp.width;
-			loadedDisplayObject.height = bmp.height;
-			bmp.parent.removeChild(bmp);
+			if(bmp != null && bmp.parent != null)
+			{
+				var index : int = bmp.parent.getChildIndex(bmp);
+				bmp.parent.addChildAt(loadedDisplayObject, index + 1);
+				
+				loadedDisplayObject.x = bmp.x;
+				loadedDisplayObject.y = bmp.y;
+				loadedDisplayObject.width = bmp.width;
+				loadedDisplayObject.height = bmp.height;
+				bmp.parent.removeChild(bmp);
+			}
 			
 		}
 		
