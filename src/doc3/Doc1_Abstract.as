@@ -261,7 +261,7 @@ package doc3
 			//				this.removeEventListener(Event.ENTER_FRAME, checkOpenedSecView);
 			//			}
 			SoundMgr.getSoundMgrEff().stop();
-			contentRoot.gotoAndPlay(2);
+			contentRoot.gotoAndPlay(1);
 		}
 		
 		private function onClickStage(evt:MouseEvent) : void
@@ -283,12 +283,13 @@ package doc3
 		private function onClickNext(evt:MouseEvent) : void
 		{
 			currentIndex += 1;
-			contentRoot.gotoAndPlay(_endFrameVector[currentIndex - 1])
+			trace((currentIndex - 1) +"::"+ _endFrameVector[currentIndex - 1]);
+			contentRoot.gotoAndPlay(_endFrameVector[currentIndex - 1] + 1)
 		}
 		private function onClickReload(evt:MouseEvent) : void
 		{
 			SoundMgr.getSoundMgrEff().stop();
-			contentRoot.gotoAndPlay(2);
+			contentRoot.gotoAndPlay(1);
 		}
 		private function onClickShowScreenSaver(evt:MouseEvent) : void
 		{
