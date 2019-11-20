@@ -8,15 +8,15 @@ package doc3
 	
 	public class Doc2_Abstract extends MovieClip
 	{
-		public var rootMc : Doc1_Abstract;
+		public var rootMC : Doc1_Abstract;
 		public var ctrlPanel : MovieClip;
-		public var subMc0 : MovieClip;
-		public var subMc1 : MovieClip;
-		public var subMc2 : MovieClip;
-		public var subMc3 : MovieClip;
-		public var subMc4 : MovieClip;
-		public var subMc5 : MovieClip;
-		public var subMc6 : MovieClip;
+		public var subMC0 : MovieClip;
+		public var subMC1 : MovieClip;
+		public var subMC2 : MovieClip;
+		public var subMC3 : MovieClip;
+		public var subMC4 : MovieClip;
+		public var subMC5 : MovieClip;
+		public var subMC6 : MovieClip;
 		
 		public var contentRoot : MovieClip;
 		
@@ -28,22 +28,61 @@ package doc3
 		private var _startFrameVector:Vector.<int>;
 		private var _endFrameVector: Vector.<int>;
 		private var _currentIndex : int = 0;
+		
+		public function get currentIndex():int
+		{
+			return _currentIndex;
+		}
+		
+		public function set currentIndex(value:int):void
+		{
+			_currentIndex = value;
+			if(_currentIndex > _endFrameVector.length - 1)
+			{
+				_currentIndex = _endFrameVector.length - 1;
+			}else if(_currentIndex < 0)
+			{
+				_currentIndex = 0;
+			}
+			
+			updatePrevNextVisible();
+		}
+		
 		private var _isAutoPlay : Boolean = true;
 		
+		public function get isAutoPlay():Boolean
+		{
+			return _isAutoPlay;
+		}
+		
+		public function set isAutoPlay(value:Boolean):void
+		{
+			_isAutoPlay = value;
+			if (ctrlPanel)
+			{
+				ctrlPanel.gotoAndStop(_isAutoPlay ? 2 : 1);
+			}
+		}
+		
 		private var _subBtnVector : Vector.<MovieClip>;
-		private var _subMcVector : Vector.<Doc2_Sub>;
+		private var _subMCVector : Vector.<Doc2_Sub>;
 		private var _currentSubBtn : MovieClip;
 		private var _currentSubMc : Doc2_Sub;
 		
 		public function Doc2_Abstract()
 		{
+			ctrlPanel.rootMC = this;
+			contentRoot.rootMC = this;
+			
+			
 			initParam();
-			rootMc = this.parent.parent as Doc1_Abstract;
+			rootMC = this.parent.parent as Doc1_Abstract;
 			initCtrlPanel();
 			
 			contentRoot.stop();
 			ReplaceUtil.baseUrl = "./res/" + configFolder + "/";
 			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig)
+				
 		}
 		
 		protected function initParam() : void
@@ -60,7 +99,7 @@ package doc3
 		private function initCtrlPanel() : void
 		{
 			ctrlPanel.stop();
-			setAutoPlay(_isAutoPlay);
+			isAutoPlay = _isAutoPlay;
 			updatePrevNextVisible();
 			ctrlPanel.closeBtn.addEventListener(MouseEvent.CLICK, onClickClose);
 			ctrlPanel.prevBtn.addEventListener(MouseEvent.CLICK, onClickPrev);
@@ -71,7 +110,7 @@ package doc3
 			ctrlPanel.autoPlayBtn.addEventListener(MouseEvent.CLICK, onClickAutoPlay);
 			
 			_subBtnVector = new Vector.<MovieClip>();
-			_subMcVector = new Vector.<Doc2_Sub>();
+			_subMCVector = new Vector.<Doc2_Sub>();
 			
 			for(var i : int = 0; i < int.MAX_VALUE ; i++)
 			{
@@ -83,8 +122,9 @@ package doc3
 				_subBtnVector.push(subBtn);
 				subBtn.stop();
 				subBtn.addEventListener(MouseEvent.CLICK, onClickSub);
+				trace((this["subMC" + i] == null) + "===============");
 				
-				_subMcVector.push(new Doc2_Sub(this["subMc" + i], startFrameVectorVector[i], endFrameVectorVector[i]));
+				_subMCVector.push(new Doc2_Sub(this["subMC" + i], startFrameVectorVector[i], endFrameVectorVector[i]));
 
 			}
 			
@@ -103,42 +143,41 @@ package doc3
 			
 			var index : int = _subBtnVector.indexOf(subBtn);
 			_currentSubBtn = _subBtnVector[index];
-			_currentSubMc = _subMcVector[index];
+			_currentSubMc = _subMCVector[index];
 			for(var i : int = 0; i < _subBtnVector.length; i++)
 			{
 				var btn : MovieClip = _subBtnVector[i];
-				var subMc : Doc2_Sub = _subMcVector[i];
+				var subMC : Doc2_Sub = _subMCVector[i];
 				if(i == index)
 				{
 					btn.gotoAndStop(1);
-					subMc.mc.visible = true;
-					subMc.mc.gotoAndPlay(1);
+					subMC.mc.visible = false;
+					subMC.mc.gotoAndPlay(1);
 					
 				}
 				else
 				{
 					btn.gotoAndStop(2);
-					subMc.mc.visible = false;
-					subMc.mc.stop();
+					subMC.mc.visible = false;
+					subMC.mc.stop();
 				}
 			}
 			
-			_startFrameVector = subMc.startFrameVector;
-			_endFrameVector = subMc.endFrameVector;
+			_startFrameVector = subMC.startFrameVector;
+			_endFrameVector = subMC.endFrameVector;
 			
 			updatePrevNextVisible();
 		}
 		
 		private function updatePrevNextVisible() : void
 		{
-			//			trace("updatePrevNextVisible" + _currentIndex);
-			if (_currentIndex == 0)
+			if (currentIndex == 0)
 			{
 				ctrlPanel.nextBtn.visible = true;
 				ctrlPanel.prevBtn.visible = false;
 				
 			}
-			else if(_currentIndex == _endFrameVector.length - 1)
+			else if(currentIndex == _endFrameVector.length - 1)
 			{
 				ctrlPanel.nextBtn.visible = false;
 				ctrlPanel.prevBtn.visible = true;
@@ -151,24 +190,14 @@ package doc3
 			
 		}
 		
-		private function setAutoPlay(isAuto) :  void
-		{
-			_isAutoPlay = isAuto
-			if (ctrlPanel)
-			{
-				ctrlPanel.gotoAndStop(_isAutoPlay ? 2 : 1);
-			}
-			
-		}
-		
 		//-------------------------------------------------------------------------------------------------------------------
 		
 
 		private function onClickClose(evt:MouseEvent) : void
 		{
-			if(rootMc)
+			if(rootMC)
 			{
-				rootMc.removeChildView();
+				rootMC.removeChildView();
 			}
 			else
 			{
@@ -177,37 +206,27 @@ package doc3
 		}
 		private function onClickPrev(evt:MouseEvent) : void
 		{
-			_currentIndex -= 1;
-			if(_currentIndex < 0)
-			{
-				_currentIndex = 0;
-			}
-			contentRoot.gotoAndPlay(_startFrameVector[_currentIndex]);
-			updatePrevNextVisible();
+			currentIndex -= 1;
+			contentRoot.gotoAndPlay(_startFrameVector[currentIndex]);
 		}
 		private function onClickNext(evt:MouseEvent) : void
 		{
-			_currentIndex += 1;
-			if(_currentIndex > _endFrameVector.length - 1)
-			{
-				_currentIndex = _endFrameVector.length - 1;
-			}
-			contentRoot.gotoAndPlay(_endFrameVector[_currentIndex - 1])
-			updatePrevNextVisible();
+			currentIndex += 1;
+			contentRoot.gotoAndPlay(_endFrameVector[currentIndex - 1] + 1)
 		}
 		
 		private function onClickShowScreenSaver(evt:MouseEvent) : void
 		{
-			rootMc.showScreenSaver(true);
+			rootMC.showScreenSaver(true);
 		}
 		
 		private function onClickManualPlay(evt:MouseEvent) : void
 		{
-			setAutoPlay(false);
+			isAutoPlay = false;
 		}
 		private function onClickAutoPlay(evt:MouseEvent) : void
 		{
-			setAutoPlay(true);
+			isAutoPlay = true;
 			
 			if(currentFrame >= _startFrameVector[_startFrameVector.length - 1])
 			{

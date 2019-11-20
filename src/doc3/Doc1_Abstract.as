@@ -283,7 +283,6 @@ package doc3
 		private function onClickNext(evt:MouseEvent) : void
 		{
 			currentIndex += 1;
-			trace((currentIndex - 1) +"::"+ _endFrameVector[currentIndex - 1]);
 			contentRoot.gotoAndPlay(_endFrameVector[currentIndex - 1] + 1)
 		}
 		private function onClickReload(evt:MouseEvent) : void
