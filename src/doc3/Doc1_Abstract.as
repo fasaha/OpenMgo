@@ -24,7 +24,42 @@ package doc3
 		protected var _startFrameVector:Vector.<int>;
 		protected var _endFrameVector: Vector.<int>;
 		private var _currentIndex : int = 0;
+
+		public function get currentIndex():int
+		{
+			return _currentIndex;
+		}
+
+		public function set currentIndex(value:int):void
+		{
+			_currentIndex = value;
+			if(_currentIndex > _endFrameVector.length - 1)
+			{
+				_currentIndex = _endFrameVector.length - 1;
+			}else if(_currentIndex < 0)
+			{
+				_currentIndex = 0;
+			}
+			
+			updatePrevNextVisible();
+		}
+
 		private var _isAutoPlay : Boolean = true;
+
+		public function get isAutoPlay():Boolean
+		{
+			return _isAutoPlay;
+		}
+
+		public function set isAutoPlay(value:Boolean):void
+		{
+			_isAutoPlay = value;
+			if (ctrlPanel)
+			{
+				ctrlPanel.gotoAndStop(_isAutoPlay ? 2 : 1);
+			}
+		}
+
 		private var _timer : Timer;
 		private var _soundVolume : int = 100;
 		
@@ -33,6 +68,11 @@ package doc3
 		
 		public function Doc1_Abstract()
 		{
+			ctrlPanel.rootMC = this;
+			screenSaver.rootMC = this;
+			contentRoot.rootMC = this;
+			
+			
 			initParam();
 			SoundMgr.getSoundMgrBg().volumeQuietrRatio = 0.9;
 			SoundMgr.getSoundMgrEff().volumeQuietrRatio = 1;
@@ -43,7 +83,7 @@ package doc3
 			
 			contentRoot.stop();
 			ReplaceUtil.baseUrl = "./res/" + configFolder + "/";
-			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig)
+			ReplaceUtil.loadConfigXml("config.xml", onLoadedConfig);
 		}
 		
 		protected function initParam() : void
@@ -61,7 +101,7 @@ package doc3
 		private function initCtrlPanel() : void
 		{
 			ctrlPanel.stop();
-			setAutoPlay(_isAutoPlay);
+			isAutoPlay = _isAutoPlay;
 			updatePrevNextVisible();
 			ctrlPanel.menuBtn.addEventListener(MouseEvent.CLICK, onClickMenu);
 			ctrlPanel.prevBtn.addEventListener(MouseEvent.CLICK, onClickPrev);
@@ -160,21 +200,16 @@ package doc3
 		
 		
 		
-		
-		
-	
-		
-		
 		private function updatePrevNextVisible() : void
 		{
-//			trace("updatePrevNextVisible" + _currentIndex);
-			if (_currentIndex == 0)
+//			trace("updatePrevNextVisible" + currentIndex);
+			if (currentIndex == 0)
 			{
 				ctrlPanel.nextBtn.visible = true;
 				ctrlPanel.prevBtn.visible = false;
 				
 			}
-			else if(_currentIndex == _endFrameVector.length - 1)
+			else if(currentIndex == _endFrameVector.length - 1)
 			{
 				ctrlPanel.nextBtn.visible = false;
 				ctrlPanel.prevBtn.visible = true;
@@ -187,15 +222,6 @@ package doc3
 			
 		}
 		
-		private function setAutoPlay(isAuto) :  void
-		{
-			_isAutoPlay = isAuto
-			if (ctrlPanel)
-			{
-				ctrlPanel.gotoAndStop(_isAutoPlay ? 2 : 1);
-			}
-			
-		}
 		
 		
 		private var _childViewLoader : Loader;
@@ -251,23 +277,13 @@ package doc3
 		}
 		private function onClickPrev(evt:MouseEvent) : void
 		{
-			_currentIndex -= 1;
-			if(_currentIndex < 0)
-			{
-				_currentIndex = 0;
-			}
-			contentRoot.gotoAndPlay(_startFrameVector[_currentIndex]);
-			updatePrevNextVisible();
+			currentIndex -= 1;
+			contentRoot.gotoAndPlay(_startFrameVector[currentIndex]);
 		}
 		private function onClickNext(evt:MouseEvent) : void
 		{
-			_currentIndex += 1;
-			if(_currentIndex > _endFrameVector.length - 1)
-			{
-				_currentIndex = _endFrameVector.length - 1;
-			}
-			contentRoot.gotoAndPlay(_endFrameVector[_currentIndex - 1])
-			updatePrevNextVisible();
+			currentIndex += 1;
+			contentRoot.gotoAndPlay(_endFrameVector[currentIndex - 1])
 		}
 		private function onClickReload(evt:MouseEvent) : void
 		{
@@ -288,12 +304,11 @@ package doc3
 		}
 		private function onClickManualPlay(evt:MouseEvent) : void
 		{
-			setAutoPlay(false);
+			isAutoPlay = false;
 		}
 		private function onClickAutoPlay(evt:MouseEvent) : void
 		{
-			setAutoPlay(true);
-			
+			isAutoPlay = true;			
 			if(currentFrame >= _startFrameVector[_startFrameVector.length - 1])
 			{
 				SoundMgr.getSoundMgrEff().stop();
